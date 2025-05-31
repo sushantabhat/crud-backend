@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Todo Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: #f0f2f5;
+            color: #1a1a1a;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            color: #1a1a1a;
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 20px;
+        }
+
+        .user-sidebar {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            height: fit-content;
+        }
+
+        .todo-section {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .user-card {
+            padding: 15px;
+            border-radius: 8px;
+            background-color: #f8f9fa;
+            margin-bottom: 15px;
+        }
+
+        .user-name {
+            font-size: 18px;
+            font-weight: 500;
+            color: #1a1a1a;
+            margin-bottom: 5px;
+        }
+
+        .user-email {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .user-role {
+            display: inline-block;
+            background-color: #4CAF50;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        .todo-form {
+            margin-bottom: 20px;
+        }
+
+        .todo-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .add-todo-btn {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+
+        .add-todo-btn:hover {
+            background-color: #45a049;
+        }
+
+        .todo-list {
+            list-style: none;
+        }
+
+        .todo-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .todo-item:last-child {
+            border-bottom: none;
+        }
+
+        .todo-checkbox {
+            margin-right: 15px;
+        }
+
+        .todo-text {
+            flex-grow: 1;
+        }
+
+        .todo-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .todo-btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .edit-btn {
+            background-color: #2196F3;
+            color: white;
+        }
+
+        .delete-btn {
+            background-color: #f44336;
+            color: white;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 24px;
+            font-weight: 600;
+            color: #4CAF50;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .user-form {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+            font-size: 14px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .error-message {
+            color: #f44336;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        .success-message {
+            color: #4CAF50;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>User Todo Dashboard</h1>
+        </div>
+
+        <div class="main-content">
+            <div class="user-sidebar">
+                <h2>Add New User</h2>
+                <form class="user-form" action="/users" method="POST">
+                    <div class="form-group">
+                        <label for="name">Name</label>
+                        <input type="text" id="name" name="name" required value="<%= locals.formData ? formData.name : '' %>">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" required value="<%= locals.formData ? formData.email : '' %>">
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" name="password" required>
+                    </div>
+                    <button type="submit" class="add-todo-btn">Add User</button>
+                    <% if (locals.error) { %>
+                        <div class="error-message"><%= error %></div>
+                    <% } %>
+                </form>
+
+                <h2 style="margin-top: 20px;">Users</h2>
+                <div id="users-container">
+                    <% if (users && users.length > 0) { %>
+                        <% users.forEach(user => { %>
+                            <div class="user-card">
+                                <div class="user-name"><%= user.name %></div>
+                                <div class="user-email"><%= user.email %></div>
+                                <div class="user-role"><%= user.role %></div>
+                                <div style="font-size: 12px; color: #666; margin-top: 8px;">
+                                    Created: <%= new Date(user.createdAt).toLocaleDateString() %>
+                                </div>
+                            </div>
+                        <% }); %>
+                    <% } else { %>
+                        <div class="user-card">No users found</div>
+                    <% } %>
+                </div>
+            </div>
+
+            <div class="todo-section">
+                <div class="stats">
+                    <div class="stat-card">
+                        <div class="stat-number" id="total-todos">0</div>
+                        <div class="stat-label">Total Todos</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="completed-todos">0</div>
+                        <div class="stat-label">Completed</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="pending-todos">0</div>
+                        <div class="stat-label">Pending</div>
+                    </div>
+                </div>
+
+                <form class="todo-form" id="todo-form">
+                    <input type="text" class="todo-input" id="todo-input" placeholder="Add a new todo..." required>
+                    <button type="submit" class="add-todo-btn">Add Todo</button>
+                </form>
+
+                <ul class="todo-list" id="todo-list">
+                    <!-- Todo items will be added here dynamically -->
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Todo functionality
+        const todoForm = document.getElementById('todo-form');
+        const todoInput = document.getElementById('todo-input');
+        const todoList = document.getElementById('todo-list');
+
+        todoForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const todoText = todoInput.value.trim();
+            if (todoText) {
+                addTodo(todoText);
+                todoInput.value = '';
+            }
+        });
+
+        function addTodo(text) {
+            const li = document.createElement('li');
+            li.className = 'todo-item';
+            li.innerHTML = `
+                <input type="checkbox" class="todo-checkbox">
+                <span class="todo-text">${text}</span>
+                <div class="todo-actions">
+                    <button class="todo-btn edit-btn">Edit</button>
+                    <button class="todo-btn delete-btn">Delete</button>
+                </div>
+            `;
+            todoList.appendChild(li);
+            updateStats();
+        }
+
+        // Update stats
+        function updateStats() {
+            const totalTodos = document.querySelectorAll('.todo-item').length;
+            const completedTodos = document.querySelectorAll('.todo-checkbox:checked').length;
+            const pendingTodos = totalTodos - completedTodos;
+
+            document.getElementById('total-todos').textContent = totalTodos;
+            document.getElementById('completed-todos').textContent = completedTodos;
+            document.getElementById('pending-todos').textContent = pendingTodos;
+        }
+
+        // Event delegation for todo actions
+        todoList.addEventListener('click', (e) => {
+            if (e.target.classList.contains('delete-btn')) {
+                e.target.closest('.todo-item').remove();
+                updateStats();
+            }
+            if (e.target.classList.contains('edit-btn')) {
+                const todoItem = e.target.closest('.todo-item');
+                const todoText = todoItem.querySelector('.todo-text');
+                const newText = prompt('Edit todo:', todoText.textContent);
+                if (newText) {
+                    todoText.textContent = newText;
+                }
+            }
+            if (e.target.classList.contains('todo-checkbox')) {
+                updateStats();
+            }
+        });
+
+        // Initial stats update
+        updateStats();
+    </script>
+</body>
+</html> 
