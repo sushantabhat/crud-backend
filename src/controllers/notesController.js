@@ -16,7 +16,7 @@ export const createnotes = async (req,res) =>{
 
 export const  getnotes = async (req,res) =>{
     try{
-        const notes = await Note.find();
+        const notes = await Note.find().sort({createdAt: -1}); // Sort by createdAt in descending order
         res.status(200).json(notes);
     }
     catch(error){
@@ -24,6 +24,20 @@ export const  getnotes = async (req,res) =>{
         res.status(500).json({message: "internal server error"});
     }
 }
+
+export const getnotesbyid = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const note = await Note.findById(id);
+        if (!note) {
+            return res.status(404).json({ message: "note not found" });
+        }
+        res.status(200).json(note);
+    } catch (error) {
+        console.error("Error fetching note by id:", error);
+        res.status(500).json({ message: "internal server error" });
+    }
+};
 
 export const updatednotes = async (req,res) =>{
     try{
@@ -44,17 +58,17 @@ export const updatednotes = async (req,res) =>{
     }
 }
 
-export const deletenotes = (req,res) =>{
+export const deletenotes = async (req,res) =>{
     try{
         const {id} = req.params;
 
-        const deletedNote = Note.findByIdAndDelete(id);
+        const deletedNote =await Note.findByIdAndDelete(id);
         
         if(!deletedNote){
             return res.status(404).json({message: "note not found"});
         }
 
-        res.status(200).json({message: "note deleted successfully"});
+        res.status(200).json({message: "note deleted successfully", followinggotdeleted: deletedNote});
     }
     catch(error){
         console.error("error deleting note:", error);
