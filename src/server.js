@@ -11,6 +11,8 @@ const app= express(); //first
 
 connectDB();
 
+app.use(express.json()); //to parse json data
+
 app.use("/api/notes",mynotesRoutes);
 
 app.listen(5001, () =>{
