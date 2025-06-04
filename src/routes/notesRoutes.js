@@ -5,7 +5,7 @@ const router = express.Router();
 
 router.post("/",createnotes );
 router.get("/", getnotes);
-router.get("/:id", getnotesbyid); // fetch a specific note by ID
+router.get("/:id", getnotesbyid); // fetch a specific note
 router.put("/:id",updatednotes);
 router.delete("/:id",deletenotes);
 
